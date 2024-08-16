@@ -1,22 +1,16 @@
-import Link from "next/link";
-
-export default function Navbar() {
+// components/NavBar.js
+export default function NavBar() {
   return (
-    <nav style={{ padding: "1rem", backgroundColor: "#333", color: "white" }}>
-      <ul style={{ display: "flex", listStyle: "none", gap: "1rem" }}>
-        <li>
-          <Link href="/">Home</Link>
-        </li>
-        <li>
-          <Link href="/climbs">My Climbs</Link>
-        </li>
-        <li>
-          <Link href="/schedule">Schedule Expedition</Link>
-        </li>
-        <li>
-          <Link href="/gallery">Gallery</Link>
-        </li>
-      </ul>
+    <nav className="bg-gray-900 bg-opacity-80 fixed top-0 w-full p-4 z-10">
+      <div className="container mx-auto flex justify-between items-center">
+        <div className="text-white text-lg font-bold">Climbing Tracker</div>
+        <ul className="flex space-x-4 text-white">
+          <li><a href="/" className="hover:text-gray-300">Home</a></li>
+          <li><a href="/climbs" className="hover:text-gray-300">My Climbs</a></li>
+          <li><a href="/schedule" className="hover:text-gray-300">Schedule Expedition</a></li>
+          <li><a href="/gallery" className="hover:text-gray-300">Gallery</a></li>
+        </ul>
+      </div>
     </nav>
   );
 }
