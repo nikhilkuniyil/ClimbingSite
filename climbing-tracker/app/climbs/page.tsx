@@ -26,14 +26,30 @@ export default function ClimbsPage() {
     setModalIsOpen(true);
   };
 
-  // Close the modal
+  // Close the modal and reset form fields
   const closeModal = () => {
-    setModalIsOpen(false);
+    setDate('');           // Reset the date field
+    setLocation('');       // Reset the location field
+    setElevation(0);       // Reset the elevation field
+    setMiles(0);           // Reset the miles field
+    setImage('');          // Reset the image field
+    setModalIsOpen(false); // Close the modal
   };
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (elevation <= 0) {
+      alert('Elevation must be greater than 0');
+      return;
+    }
+  
+    if (miles < 0) {
+      alert('Miles cannot be negative');
+      return;
+    }
+
     const newClimb = { date, location, elevation, miles, image };
   
     try {
