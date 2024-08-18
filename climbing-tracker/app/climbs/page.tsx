@@ -36,9 +36,12 @@ export default function ClimbsPage() {
     setModalIsOpen(false); // Close the modal
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     if (elevation <= 0) {
       alert('Elevation must be greater than 0');
@@ -70,6 +73,8 @@ export default function ClimbsPage() {
       }
     } catch (error) {
       console.error('Error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -168,9 +173,10 @@ export default function ClimbsPage() {
             </button>
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              className={`bg-blue-600 text-white px-4 py-2 rounded ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
+              disabled={isSubmitting}
             >
-              Add Climb
+              {isSubmitting ? 'Submitting...' : 'Add Climb'}
             </button>
           </div>
         </form>
