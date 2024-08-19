@@ -1,9 +1,13 @@
 const express = require('express');
+const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Use CORS to allow requests from different origins
+app.use(cors());
 
 // Connect to SQLite database
 const db = new sqlite3.Database(path.join(__dirname, 'climbing-tracker.db'), (err) => {
@@ -37,7 +41,7 @@ app.get('/', (req, res) => {
   res.send('Hello from the Climbing Tracker backend!');
 });
 
-// Example API route to get climbs
+// API route to get climbs
 app.get('/climbs', (req, res) => {
   db.all('SELECT * FROM climbs', [], (err, rows) => {
     if (err) {
@@ -53,16 +57,16 @@ app.get('/climbs', (req, res) => {
 
 // Example API route to add a new climb
 app.post('/climbs', (req, res) => {
-  const { date, location, elevation } = req.body;
+  const { date, location, elevation, miles, image } = req.body;
   const query = `INSERT INTO climbs (date, location, elevation, miles) VALUES (?, ?, ?)`;
-  db.run(query, [date, location, elevation], function (err) {
+  db.run(query, [date, location, elevation, miles, image], function (err) {
     if (err) {
       res.status(400).json({ error: err.message });
       return;
     }
     res.json({
       message: 'success',
-      data: { id: this.lastID, date, location, elevation, miles },
+      data: { id: this.lastID, date, location, elevation, miles, image },
     });
   });
 });
