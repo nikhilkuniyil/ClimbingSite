@@ -20,14 +20,29 @@ const db = new sqlite3.Database(path.join(__dirname, 'climbing-tracker.db'), (er
     db.run(`CREATE TABLE IF NOT EXISTS climbs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       date TEXT,
+      peak TEXT,
       location TEXT,
       elevation INTEGER,
-      miles REAL
+      miles REAL,
+      image TEXT
     )`, (err) => {
       if (err) {
         console.error('Error creating table', err);
       } else {
         console.log('Climbs table created or already exists');
+        
+        // Add the 'peak' column if it doesn't exist
+        db.run(`ALTER TABLE climbs ADD COLUMN peak TEXT`, (err) => {
+          if (err) {
+            if (err.message.includes("duplicate column name")) {
+              console.log("Column peak already exists.");
+            } else {
+              console.error('Error adding peak column:', err.message);
+            }
+          } else {
+            console.log('Column peak added successfully.');
+          }
+        });
       }
     });
   }
@@ -57,16 +72,21 @@ app.get('/climbs', (req, res) => {
 
 // Example API route to add a new climb
 app.post('/climbs', (req, res) => {
-  const { date, location, elevation, miles, image } = req.body;
-  const query = `INSERT INTO climbs (date, location, elevation, miles) VALUES (?, ?, ?)`;
-  db.run(query, [date, location, elevation, miles, image], function (err) {
+  const { date, peak, location, elevation, miles, image } = req.body;
+
+  // Log the received data
+  console.log('Received payload:', req.body);
+
+  const query = `INSERT INTO climbs (date, peak, location, elevation, miles, image) VALUES (?, ?, ?, ?, ?, ?)`;
+  db.run(query, [date, peak, location, elevation, miles, image], function (err) {
     if (err) {
+      console.error('Database error:', err.message);
       res.status(400).json({ error: err.message });
       return;
     }
     res.json({
       message: 'success',
-      data: { id: this.lastID, date, location, elevation, miles, image },
+      data: { id: this.lastID, date, peak, location, elevation, miles, image },
     });
   });
 });
