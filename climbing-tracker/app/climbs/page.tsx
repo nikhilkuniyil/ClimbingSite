@@ -111,8 +111,8 @@ export default function ClimbsPage() {
           {climbs.map((climb) => (
             <div key={climb.id} className="bg-white shadow-md rounded-lg p-4">
               <img src={climb.image} alt={climb.location} className="rounded-lg mb-4" />
-              <h3 className="text-xl font-semibold">{climb.peak}</h3>
-              <h3 className="text-xl font-semibold">{climb.location}</h3>
+              <h3 className="text-xl font-semibold text-black">{climb.peak}</h3>
+              <p className="text-gray-600">{climb.location}</p>
               <p className="text-gray-600">{climb.date}</p>
               <p className="text-gray-600">{climb.elevation} ft</p>
               {climb.miles && <p className="text-gray-600">{climb.miles} miles</p>}
