@@ -1,10 +1,19 @@
+"use client";
+
+import { useState } from "react";
 import NavBar from "./components/Navbar";
 
 export default function HomePage() {
+  const [isNavOpen, setIsNavOpen] = useState(false);
+
+  const toggleNav = () => {
+    setIsNavOpen(!isNavOpen);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
-      <NavBar />
-      
+      <NavBar isOpen={isNavOpen} onClose={toggleNav} />
+
       {/* Hero Section */}
       <section
         className="relative bg-cover bg-center h-screen flex flex-col items-center justify-center text-white"
@@ -16,7 +25,10 @@ export default function HomePage() {
           <p className="text-2xl mb-6">
             Track your climbs, view your photos, and schedule new expeditions!
           </p>
-          <button className="bg-blue-600 text-white py-3 px-6 rounded-full hover:bg-blue-700">
+          <button
+            className="bg-blue-600 text-white py-3 px-6 rounded-full hover:bg-blue-700"
+            onClick={toggleNav}
+          >
             Get Started
           </button>
         </div>
@@ -38,8 +50,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-
 
       {/* Footer Section */}
       <footer className="bg-gray-900 text-white py-6">

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Modal from 'react-modal';
-import NavBar from "../components/Navbar";
+import NavBar from '../components/Navbar';
 
 interface Climb {
   id: number;
@@ -19,6 +19,9 @@ export default function ClimbsPage() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'add' | 'view'>('add');
   const [selectedClimb, setSelectedClimb] = useState<Climb | null>(null);
+
+  // State to handle NavBar visibility
+  const [isNavBarOpen, setIsNavBarOpen] = useState(false);
 
   const [date, setDate] = useState('');
   const [peak, setPeak] = useState('');
@@ -96,7 +99,15 @@ export default function ClimbsPage() {
 
   return (
     <div>
-      <NavBar />
+      <button
+        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 fixed top-4 left-4 z-50"
+        onClick={() => setIsNavBarOpen(true)}
+      >
+        Open NavBar
+      </button>
+
+      <NavBar isOpen={isNavBarOpen} onClose={() => setIsNavBarOpen(false)} />
+
       <div className="mt-16 p-4">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-bold">My Climbs</h1>
