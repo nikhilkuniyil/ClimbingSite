@@ -2,22 +2,21 @@
 
 import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from  '../lib/firebase'; // Adjust the path as needed
+import { auth } from '../lib/firebase';
 import { useRouter } from 'next/navigation';
 
-
 export default function SignIn() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSignIn = async () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       console.log('Signed in successfully:', user);
-      router.push('/dashboard'); // You can redirect the user or update the UI as needed here
+      router.push('/dashboard');
     } catch (error: any) {
       console.error('Error signing in:', error);
       setError(error.message);
@@ -25,7 +24,11 @@ export default function SignIn() {
   };
 
   const handleCreateAccount = () => {
-    router.push('/signup'); // Redirect to the sign-up page
+    router.push('/signup');
+  };
+
+  const handleForgotPassword = () => {
+    router.push('/forgot-password'); // Navigate to forgot password page
   };
 
   return (
@@ -48,15 +51,21 @@ export default function SignIn() {
       />
       <button
         onClick={handleSignIn}
-        className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+        className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 mb-4"
       >
         Sign In
       </button>
       <button
         onClick={handleCreateAccount}
-        className="text-blue-600 hover:underline"
+        className="text-blue-600 hover:underline mb-4"
       >
         Create Account
+      </button>
+      <button
+        onClick={handleForgotPassword}
+        className="text-blue-600 hover:underline"
+      >
+        Forgot Password?
       </button>
     </div>
   );
