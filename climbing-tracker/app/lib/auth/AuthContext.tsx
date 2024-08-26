@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from './firebase'; // Adjust path to your firebase configuration file
+import { auth } from '../firebase'; 
 
 // Define a context and provider for authentication
 interface AuthContextType {

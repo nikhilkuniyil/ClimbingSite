@@ -1,6 +1,6 @@
 // climbing-tracker/app/layout.tsx
 import './globals.css';
-import { AuthProvider } from './lib/AuthContext'; // Import your AuthProvider
+import { AuthProvider } from './lib/auth/AuthContext'; // Import your AuthProvider
 
 export default function RootLayout({
   children,
