@@ -24,7 +24,7 @@ export default function SignUp() {
       console.log('Account created successfully:', user);
       setSuccess('Account created successfully!');
       // You can redirect the user or update the UI as needed here
-      router.push('/dashboard');
+      router.push('/climbs');
     } catch (error: any) {
       console.error('Error creating account:', error);
       setError(error.message);
@@ -41,14 +41,14 @@ export default function SignUp() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Email"
-        className="mb-4 p-2 border border-gray-300 rounded w-64"
+        className="mb-4 p-2 border border-gray-300 rounded w-64 text-black"
       />
       <input
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Password"
-        className="mb-4 p-2 border border-gray-300 rounded w-64"
+        className="mb-4 p-2 border border-gray-300 rounded w-64 text-black"
       />
       <button
         onClick={handleSignUp}

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from 'react';
+import { useContext } from 'react';
+import { useAuth } from '../lib/auth/AuthContext'; 
 import Modal from 'react-modal';
 import NavBar from '../components/Navbar';
 
@@ -56,6 +58,7 @@ export default function ClimbsPage() {
   };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useAuth();
 
   // Handle form submission for adding a new climb
   const handleSubmit = async (e: React.FormEvent) => {
@@ -72,7 +75,7 @@ export default function ClimbsPage() {
       return;
     }
 
-    const newClimb = { date, peak, location, elevation, miles, image };
+    const newClimb = { date, peak, location, elevation, miles, image, userID: user?.uid };
 
     try {
       const res = await fetch('http://localhost:3001/climbs', {

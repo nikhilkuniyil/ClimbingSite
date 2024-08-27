@@ -16,7 +16,7 @@ export default function SignIn() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       console.log('Signed in successfully:', user);
-      router.push('/dashboard');
+      router.push('/climbs');
     } catch (error: any) {
       console.error('Error signing in:', error);
       setError(error.message);
@@ -40,14 +40,14 @@ export default function SignIn() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Email"
-        className="mb-4 p-2 border border-gray-300 rounded w-64"
+        className="mb-4 p-2 border border-gray-300 rounded w-64 text-black"
       />
       <input
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Password"
-        className="mb-4 p-2 border border-gray-300 rounded w-64"
+        className="mb-4 p-2 border border-gray-300 rounded w-64 text-black"
       />
       <button
         onClick={handleSignIn}

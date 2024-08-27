@@ -19,6 +19,7 @@ const db = new sqlite3.Database(path.join(__dirname, 'climbing-tracker.db'), (er
     // Create the 'climbs' table if it doesn't exist
     db.run(`CREATE TABLE IF NOT EXISTS climbs (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId TEXT,
       date TEXT,
       peak TEXT,
       location TEXT,
@@ -58,7 +59,8 @@ app.get('/', (req, res) => {
 
 // API route to get climbs
 app.get('/climbs', (req, res) => {
-  db.all('SELECT * FROM climbs', [], (err, rows) => {
+  const { userId } = req.query;
+  db.all('SELECT * FROM climbs WHERE userId = ?', [userId], (err, rows) => {
     if (err) {
       res.status(400).json({ error: err.message });
       return;
@@ -72,13 +74,13 @@ app.get('/climbs', (req, res) => {
 
 // Example API route to add a new climb
 app.post('/climbs', (req, res) => {
-  const { date, peak, location, elevation, miles, image } = req.body;
+  const { date, peak, location, elevation, miles, image, userId } = req.body;
 
   // Log the received data
   console.log('Received payload:', req.body);
 
-  const query = `INSERT INTO climbs (date, peak, location, elevation, miles, image) VALUES (?, ?, ?, ?, ?, ?)`;
-  db.run(query, [date, peak, location, elevation, miles, image], function (err) {
+  const query = `INSERT INTO climbs (userId, date, peak, location, elevation, miles, image) VALUES (?, ?, ?, ?, ?, ?)`;
+  db.run(query, [userId, date, peak, location, elevation, miles, image], function (err) {
     if (err) {
       console.error('Database error:', err.message);
       res.status(400).json({ error: err.message });
@@ -86,7 +88,7 @@ app.post('/climbs', (req, res) => {
     }
     res.json({
       message: 'success',
-      data: { id: this.lastID, date, peak, location, elevation, miles, image },
+      data: { id: this.lastID, userId, date, peak, location, elevation, miles, image },
     });
   });
 });
