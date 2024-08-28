@@ -72,7 +72,7 @@ app.get('/climbs', (req, res) => {
   });
 });
 
-// Example API route to add a new climb
+// API route to add a new climb
 app.post('/climbs', (req, res) => {
   const { date, peak, location, elevation, miles, image, userId } = req.body;
 
@@ -92,6 +92,23 @@ app.post('/climbs', (req, res) => {
     });
   });
 });
+
+// DELETE route to remove a climb by ID
+app.delete('/climbs/:id', (req, res) => {
+    const climbId = req.params.id;
+    
+    const query = `DELETE FROM climbs WHERE id = ?`;
+    db.run(query, climbId, function (err) {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({
+        message: 'Climb deleted successfully',
+        data: this.changes // Number of rows affected
+      });
+    });
+  });
 
 // Start the server
 app.listen(PORT, () => {
