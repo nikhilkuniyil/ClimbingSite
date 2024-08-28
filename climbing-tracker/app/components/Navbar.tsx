@@ -1,23 +1,50 @@
+// components/NavBar.tsx
+"use client";
+
 import React from 'react';
+import Link from 'next/link';
+import { useAuth } from '../lib/auth/AuthContext';
+import { useRouter } from 'next/navigation';
+import { signOut } from 'firebase/auth';
+import { auth } from '../lib/firebase';
 
-interface NavBarProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
+export default function NavBar() {
+  const { user } = useAuth(); // Get user from context
+  const router = useRouter();
 
-export default function NavBar({ isOpen, onClose }: NavBarProps) {
+  // Handle log out
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); // Sign out the user
+      router.push('/'); // Redirect to the home page
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   return (
-    <div className={`fixed top-0 left-0 w-64 bg-gray-900 h-full z-50 transition-transform transform ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-      <div className="p-4 flex justify-between items-center text-white">
-        <h1 className="text-lg font-bold">Climbing Tracker</h1>
-        <button onClick={onClose} className="text-xl">&times;</button>
+    <nav className="bg-gray-900 text-white fixed top-0 w-full p-4 z-10">
+      <div className="container mx-auto flex justify-between items-center">
+        <div className="text-white text-lg font-bold">Climbing Tracker</div>
+        <ul className="flex space-x-4 text-white">
+          <li><Link href="/">Home</Link></li>
+          <li><Link href="/climbs">My Climbs</Link></li>
+          <li><Link href="/schedule">Schedule Expedition</Link></li>
+          <li><Link href="/gallery">Gallery</Link></li>
+          {user ? (
+            <li>
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+              >
+                Log Out
+              </button>
+            </li>
+          ) : (
+            <li><Link href="/signin">Sign In</Link></li>
+          )}
+        </ul>
       </div>
-      <ul className="text-white mt-4">
-        <li><a href="/" className="block p-4 hover:bg-gray-700">Home</a></li>
-        <li><a href="/climbs" className="block p-4 hover:bg-gray-700">My Climbs</a></li>
-        <li><a href="/schedule" className="block p-4 hover:bg-gray-700">Schedule Expedition</a></li>
-        <li><a href="/gallery" className="block p-4 hover:bg-gray-700">Gallery</a></li>
-      </ul>
-    </div>
+    </nav>
   );
 }

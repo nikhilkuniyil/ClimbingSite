@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { useContext } from 'react';
-import { useAuth } from '../lib/auth/AuthContext'; 
+import { useAuth } from '../lib/auth/AuthContext';
 import Modal from 'react-modal';
 import NavBar from '../components/Navbar';
 
@@ -22,15 +21,14 @@ export default function ClimbsPage() {
   const [modalMode, setModalMode] = useState<'add' | 'view'>('add');
   const [selectedClimb, setSelectedClimb] = useState<Climb | null>(null);
 
-  // State to handle NavBar visibility
-  const [isNavBarOpen, setIsNavBarOpen] = useState(false);
-
   const [date, setDate] = useState('');
   const [peak, setPeak] = useState('');
   const [location, setLocation] = useState('');
   const [elevation, setElevation] = useState(0);
   const [miles, setMiles] = useState(0);
   const [image, setImage] = useState('');
+
+  const { user } = useAuth();
 
   // Open the modal for adding a new climb
   const openAddModal = () => {
@@ -58,7 +56,6 @@ export default function ClimbsPage() {
   };
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user } = useAuth();
 
   // Handle form submission for adding a new climb
   const handleSubmit = async (e: React.FormEvent) => {
@@ -102,15 +99,10 @@ export default function ClimbsPage() {
 
   return (
     <div>
-      <button
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 fixed top-4 left-4 z-50"
-        onClick={() => setIsNavBarOpen(true)}
-      >
-        Open NavBar
-      </button>
+      {/* Display NavBar always at the top */}
+      <NavBar />
 
-      <NavBar isOpen={isNavBarOpen} onClose={() => setIsNavBarOpen(false)} />
-
+      {/* Main Content */}
       <div className="mt-16 p-4">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-3xl font-bold">My Climbs</h1>

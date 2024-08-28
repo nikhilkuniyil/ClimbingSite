@@ -14,10 +14,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Pass the required props */}
-      <NavBar isOpen={navBarOpen} onClose={() => setNavBarOpen(false)} />
-      
-      {/* Hero Section */}
       <section
         className="relative bg-cover bg-center h-screen flex flex-col items-center justify-center text-white"
         style={{ backgroundImage: "url('/images/snowyMountain2.jpg')" }}
