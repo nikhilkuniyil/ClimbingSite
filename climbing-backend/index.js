@@ -79,7 +79,7 @@ app.post('/climbs', (req, res) => {
   // Log the received data
   console.log('Received payload:', req.body);
 
-  const query = `INSERT INTO climbs (userId, date, peak, location, elevation, miles, image) VALUES (?, ?, ?, ?, ?, ?)`;
+  const query = `INSERT INTO climbs (userId, date, peak, location, elevation, miles, image) VALUES (?, ?, ?, ?, ?, ?, ?)`;
   db.run(query, [userId, date, peak, location, elevation, miles, image], function (err) {
     if (err) {
       console.error('Database error:', err.message);
