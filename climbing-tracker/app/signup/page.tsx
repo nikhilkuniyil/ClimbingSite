@@ -35,6 +35,9 @@ export default function SignUp() {
       // Redirect the user to the /climbs page
       router.push('/climbs');
     } catch (error: any) {
+      if (error.code == 'auth/email-already-in-use') {
+        setError('An account with this email already exists.');
+      }
       console.error('Error creating account:', error);
       setError(error.message);
     }
