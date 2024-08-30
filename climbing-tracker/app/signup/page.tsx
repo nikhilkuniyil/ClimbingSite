@@ -95,7 +95,7 @@ export default function SignUp() {
       </div>
 
       <input
-        type="text"
+        type="text" 
         value={firstName}
         onChange={(e) => setFirstName(e.target.value)}
         placeholder="First Name"
