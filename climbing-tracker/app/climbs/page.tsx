@@ -4,9 +4,10 @@ import { useState } from 'react';
 import { useAuth } from '../lib/auth/AuthContext';
 import Modal from 'react-modal';
 import NavBar from '../components/Navbar';
+import { v4 as uuidv4 } from 'uuid';
 
 interface Climb {
-  id: number;
+  id: string;
   date: string;
   peak: string;
   location: string;
@@ -27,30 +28,66 @@ export default function ClimbsPage() {
   const [elevation, setElevation] = useState(0);
   const [miles, setMiles] = useState(0);
   const [image, setImage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const { user } = useAuth();
 
   // Handle form submission for adding a new climb
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    // Validate inputs
+    if (!date || !peak || !location || elevation <= 0) {
+      setError('Please fill in all required fields and ensure values are positive.');
+      setLoading(false);
+      return;
+    }
+
     const newClimb = {
-      id: climbs.length + 1, // Generating a simple ID, use a better unique identifier in production
+      id: uuidv4(), // Unique ID
       date,
       peak,
       location,
       elevation,
       miles,
       image,
+      userId: user?.uid, // Associate climb with the logged-in user
     };
-    setClimbs([...climbs, newClimb]);
-    setModalIsOpen(false);
-    // Reset form fields
-    setDate('');
-    setPeak('');
-    setLocation('');
-    setElevation(0);
-    setMiles(0);
-    setImage('');
+
+    try {
+      // Make a POST request to your backend API to add a new climb
+      const response = await fetch('http://localhost:3001/api/climbs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newClimb),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add climb');
+      }
+
+      const addedClimb = await response.json();
+      setClimbs([...climbs, addedClimb.data]); // Update local state with the new climb
+      setModalIsOpen(false);
+
+      // Reset form fields
+      setDate('');
+      setPeak('');
+      setLocation('');
+      setElevation(0);
+      setMiles(0);
+      setImage('');
+    } catch (err) {
+      console.error(err);
+      setError('Failed to add climb. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,13 +102,13 @@ export default function ClimbsPage() {
             Add New Climb
           </button>
         </div>
-        
+
         {/* Loop through climbs, each card will be its own component on the page */}
         {climbs.map((climb) => (
           <div
             key={climb.id}
             className="bg-white shadow-md rounded-lg p-6 mb-6 mx-auto"
-            style={{ width: '600px', height: '700px' }} // Adjust width and height as needed
+            style={{ width: '600px', height: '700px' }}
           >
             <img
               src={climb.image}
@@ -97,12 +134,13 @@ export default function ClimbsPage() {
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
-        contentLabel={modalMode === 'add' ? "Add New Climb" : "View Climb Details"}
+        contentLabel="Add New Climb"
         className="bg-white p-6 rounded-lg max-w-md mx-auto mt-20 shadow-lg"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
       >
         {/* Form to Add New Climb */}
         <h2 className="text-2xl font-bold mb-4 text-black">Add New Climb</h2>
+        {error && <p className="text-red-600">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-black">Date</label>
@@ -174,8 +212,9 @@ export default function ClimbsPage() {
             <button
               type="submit"
               className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              disabled={loading}
             >
-              Add Climb
+              {loading ? 'Adding...' : 'Add Climb'}
             </button>
           </div>
         </form>
