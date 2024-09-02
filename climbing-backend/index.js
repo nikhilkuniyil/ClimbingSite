@@ -95,20 +95,23 @@ app.post('/climbs', (req, res) => {
 
 // DELETE route to remove a climb by ID
 app.delete('/climbs/:id', (req, res) => {
-    const climbId = req.params.id;
-    
-    const query = `DELETE FROM climbs WHERE id = ?`;
-    db.run(query, climbId, function (err) {
+  const climbId = req.params.id;
+
+  const deleteQuery = `DELETE FROM climbs WHERE id = ?`;
+
+  db.run(deleteQuery, [climbId], function (err) {
       if (err) {
-        res.status(400).json({ error: err.message });
-        return;
+          console.error('Error deleting climb:', err);
+          res.status(500).json({ error: 'Failed to delete climb' });
+      } else {
+          if (this.changes > 0) {
+              res.status(200).json({ message: 'Climb deleted successfully' });
+          } else {
+              res.status(404).json({ error: 'Climb not found' });
+          }
       }
-      res.json({
-        message: 'Climb deleted successfully',
-        data: this.changes // Number of rows affected
-      });
-    });
   });
+});
 
 // Start the server
 app.listen(PORT, () => {

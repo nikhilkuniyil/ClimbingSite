@@ -58,7 +58,7 @@ export default function ClimbsPage() {
     };
 
     try {
-      // Make a POST request to your backend API to add a new climb
+      // POST request to your backend API to add a new climb
       const response = await fetch('http://localhost:3001/api/climbs', {
         method: 'POST',
         headers: {
