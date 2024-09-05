@@ -52,11 +52,6 @@ const db = new sqlite3.Database(path.join(__dirname, 'climbing-tracker.db'), (er
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-// Sample route
-app.get('/', (req, res) => {
-  res.send('Hello from the Climbing Tracker backend!');
-});
-
 // API route to get climbs
 app.get('/climbs', (req, res) => {
   const { userId } = req.query;

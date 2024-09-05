@@ -24,7 +24,7 @@ const options = {
 
 export default function Map({ lat, lng, trailPath }: { lat: number; lng: number; trailPath?: google.maps.LatLngLiteral[] }) {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string, // Use environment variable for API key
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string, // environment variable for API key
     libraries,
   });
 
@@ -41,7 +41,7 @@ export default function Map({ lat, lng, trailPath }: { lat: number; lng: number;
       {/* Marker for the peak */}
       <Marker position={{ lat, lng }} />
 
-      {/* Optional Polyline to show trail */}
+      {/* Polyline to show trail */}
       {trailPath && <Polyline path={trailPath} options={{ strokeColor: '#FF0000' }} />}
     </GoogleMap>
   );

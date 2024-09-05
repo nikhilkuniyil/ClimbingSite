@@ -7,7 +7,7 @@ import NavBar from '../components/Navbar';
 import { v4 as uuidv4 } from 'uuid';
 
 interface Climb {
-  id: string;
+  id: number;
   date: string;
   peak: string;
   location: string;
@@ -59,7 +59,7 @@ export default function ClimbsPage() {
 
     try {
       // POST request to your backend API to add a new climb
-      const response = await fetch('http://localhost:3001/api/climbs', {
+      const response = await fetch('http://localhost:3001/climbs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,6 +87,23 @@ export default function ClimbsPage() {
       setError('Failed to add climb. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+   // Handle deletion of a climb
+   const handleDeleteClimb = async (id: number) => {
+    try {
+      const res = await fetch(`http://localhost:3001/climbs/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        setClimbs(climbs.filter((climb) => climb.id !== id));
+      } else {
+        console.error('Failed to delete the climb');
+      }
+    } catch (error) {
+      console.error('Error deleting climb:', error);
     }
   };
 
@@ -125,6 +142,13 @@ export default function ClimbsPage() {
               onClick={() => setSelectedClimb(climb)}
             >
               View Details
+            </button>
+
+            <button
+              className="mt-4 ml-4 text-red-600 hover:underline"
+              onClick={() => handleDeleteClimb(climb.id)}
+            >
+              Delete Climb
             </button>
           </div>
         ))}

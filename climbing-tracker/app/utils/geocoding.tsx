@@ -1,8 +1,8 @@
 async function getCoordinates(peakName: string): Promise<{ lat: number; lng: number } | null> {
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY; // Make sure to store your API key in .env.local
+    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY; // stored API key in .env.local
     const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-            peakName
+            peakName.replace(/\s/g, "")
         )}&key=${apiKey}`
     );
     const data = await response.json();
