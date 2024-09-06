@@ -111,9 +111,9 @@ export default function ClimbsPage() {
     <div className="bg-gray-100 min-h-screen">
       <NavBar />
       <div className="container mx-auto p-4 mt-16">
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-end mt-4 mr-8">
           <button
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold px-6 py-3 rounded-full shadow-md hover:shadow-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 ease-in-out transform hover:-translate-y-1 focus:outline-none"
             onClick={() => setModalIsOpen(true)}
           >
             Add New Climb
