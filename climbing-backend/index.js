@@ -55,6 +55,13 @@ app.use(express.json());
 // API route to get climbs
 app.get('/climbs', (req, res) => {
   const { userId } = req.query;
+  if (!userId) {
+    console.log('No userId provided');
+    return res.status(400).json({ error: 'No userId provided' });
+  }
+
+  console.log('Fetching climbs for userId:', userId);
+
   db.all('SELECT * FROM climbs WHERE userId = ?', [userId], (err, rows) => {
     if (err) {
       res.status(400).json({ error: err.message });
@@ -66,6 +73,7 @@ app.get('/climbs', (req, res) => {
     });
   });
 });
+
 
 // API route to add a new climb
 app.post('/climbs', (req, res) => {

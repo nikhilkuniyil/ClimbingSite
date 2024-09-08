@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../lib/auth/AuthContext';
 import Modal from 'react-modal';
 import NavBar from '../components/Navbar';
@@ -33,13 +33,44 @@ export default function ClimbsPage() {
 
   const { user } = useAuth();
 
+  useEffect(() => {
+    const fetchClimbs = async () => {
+      try {
+        // Ensure the user is available
+        if (!user?.uid) {
+          console.log('User not authenticated yet.');
+          return;
+        }
+
+        const response = await fetch(`http://localhost:3001/climbs?userId=${user.uid}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+
+          // Ensure that data is an array before setting it to state
+          if (Array.isArray(data.data)) {
+            setClimbs(data.data); // Access data field from response and set the climbs
+          } else {
+            console.error('Climbs data is not an array:', data);
+          }
+        } else {
+          console.error('Failed to fetch climbs');
+        }
+      } catch (error) {
+        console.error('Error fetching climbs:', error);
+        setError('Error fetching climbs.');
+      }
+    };
+
+    fetchClimbs();
+  }, [user]); // Fetch climbs whenever the user changes
+
   // Handle form submission for adding a new climb
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
 
-    // Validate inputs
     if (!date || !peak || !location || elevation <= 0) {
       setError('Please fill in all required fields and ensure values are positive.');
       setLoading(false);
@@ -47,18 +78,17 @@ export default function ClimbsPage() {
     }
 
     const newClimb = {
-      id: uuidv4(), // Unique ID
+      id: uuidv4(),
       date,
       peak,
       location,
       elevation,
       miles,
       image,
-      userId: user?.uid, // Associate climb with the logged-in user
+      userId: user?.uid,
     };
 
     try {
-      // POST request to your backend API to add a new climb
       const response = await fetch('http://localhost:3001/climbs', {
         method: 'POST',
         headers: {
@@ -72,7 +102,7 @@ export default function ClimbsPage() {
       }
 
       const addedClimb = await response.json();
-      setClimbs([...climbs, addedClimb.data]); // Update local state with the new climb
+      setClimbs([...climbs, addedClimb.data]); // Add the new climb to the state
       setModalIsOpen(false);
 
       // Reset form fields
@@ -90,8 +120,8 @@ export default function ClimbsPage() {
     }
   };
 
-   // Handle deletion of a climb
-   const handleDeleteClimb = async (id: number) => {
+  // Handle deletion of a climb
+  const handleDeleteClimb = async (id: number) => {
     try {
       const res = await fetch(`http://localhost:3001/climbs/${id}`, {
         method: 'DELETE',
@@ -119,41 +149,45 @@ export default function ClimbsPage() {
             Add New Climb
           </button>
         </div>
-
-        {/* Loop through climbs, each card will be its own component on the page */}
-        {climbs.map((climb) => (
-          <div
-            key={climb.id}
-            className="bg-white shadow-md rounded-lg p-6 mb-6 mx-auto"
-            style={{ width: '600px', height: '700px' }}
-          >
-            <img
-              src={climb.image}
-              alt={climb.location}
-              className="rounded-lg mb-4 w-full h-2/3 object-cover"
-            />
-            <h3 className="text-xl font-semibold">{climb.peak}</h3>
-            <p className="text-gray-600">{climb.location}</p>
-            <p className="text-gray-600">{climb.date}</p>
-            <p className="text-gray-600">{climb.elevation} ft</p>
-            {climb.miles && <p className="text-gray-600">{climb.miles} miles</p>}
-            <button
-              className="mt-4 text-blue-600 hover:underline"
-              onClick={() => setSelectedClimb(climb)}
+  
+        {/* Loop through climbs */}
+        {Array.isArray(climbs) && climbs.length > 0 ? (
+          climbs.map((climb) => (
+            <div
+              key={climb.id}
+              className="bg-white shadow-md rounded-lg p-6 mb-6 mx-auto"
+              style={{ width: '600px', height: '700px' }}
             >
-              View Details
-            </button>
-
-            <button
-              className="mt-4 ml-4 text-red-600 hover:underline"
-              onClick={() => handleDeleteClimb(climb.id)}
-            >
-              Delete Climb
-            </button>
-          </div>
-        ))}
+              <img
+                src={climb.image}
+                alt={climb.location}
+                className="rounded-lg mb-4 w-full h-2/3 object-cover"
+              />
+              <h3 className="text-xl font-semibold">{climb.peak}</h3>
+              <p className="text-gray-600">{climb.location}</p>
+              <p className="text-gray-600">{climb.date}</p>
+              <p className="text-gray-600">{climb.elevation} ft</p>
+              {climb.miles && <p className="text-gray-600">{climb.miles} miles</p>}
+              <button
+                className="mt-4 text-blue-600 hover:underline"
+                onClick={() => setSelectedClimb(climb)}
+              >
+                View Details
+              </button>
+  
+              <button
+                className="mt-4 ml-4 text-red-600 hover:underline"
+                onClick={() => handleDeleteClimb(climb.id)}
+              >
+                Delete Climb
+              </button>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-600 text-center mt-4">No climbs available</p>
+        )}
       </div>
-
+  
       {/* Modal for Add/View Climb */}
       <Modal
         isOpen={modalIsOpen}
