@@ -62,7 +62,7 @@ app.get('/climbs', (req, res) => {
 
   console.log('Fetching climbs for userId:', userId);
 
-  db.all('SELECT * FROM climbs WHERE userId = ?', [userId], (err, rows) => {
+  db.all('SELECT * FROM climbs WHERE userId = ? ORDER BY date DESC', [userId], (err, rows) => {
     if (err) {
       res.status(400).json({ error: err.message });
       return;
