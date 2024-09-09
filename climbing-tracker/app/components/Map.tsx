@@ -5,7 +5,7 @@
 import { useLoadScript, Libraries, GoogleMap, Marker, Polyline } from '@react-google-maps/api';
 import React from 'react';
 
-const libraries: Libraries = ['places'];// Additional libraries can be included here if needed
+const libraries: Libraries = ['places'];
 
 const mapContainerStyle = {
   width: '100%',

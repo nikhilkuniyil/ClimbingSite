@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../lib/auth/AuthContext';
 import Modal from 'react-modal';
 import NavBar from '../components/Navbar';
+import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 
 interface Climb {
@@ -32,8 +33,15 @@ export default function ClimbsPage() {
   const [error, setError] = useState<string | null>(null);
 
   const { user } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
+    // redirect user to sign-in page if they are not logged in
+    if (!user) {
+      router.push('/signin');
+      return;
+    }
+
     const fetchClimbs = async () => {
       try {
         // Ensure the user is available
