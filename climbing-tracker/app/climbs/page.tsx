@@ -152,37 +152,69 @@ export default function ClimbsPage() {
   
         {/* Loop through climbs */}
         {Array.isArray(climbs) && climbs.length > 0 ? (
-          climbs.map((climb) => (
-            <div
-              key={climb.id}
-              className="bg-white shadow-md rounded-lg p-6 mb-6 mx-auto"
-              style={{ width: '600px', height: '700px' }}
-            >
-              <img
-                src={climb.image}
-                alt={climb.location}
-                className="rounded-lg mb-4 w-full h-2/3 object-cover"
-              />
-              <h3 className="text-xl font-semibold">{climb.peak}</h3>
-              <p className="text-gray-600">{climb.location}</p>
-              <p className="text-gray-600">{climb.date}</p>
-              <p className="text-gray-600">{climb.elevation} ft</p>
-              {climb.miles && <p className="text-gray-600">{climb.miles} miles</p>}
-              <button
-                className="mt-4 text-blue-600 hover:underline"
-                onClick={() => setSelectedClimb(climb)}
-              >
-                View Details
-              </button>
+          climbs.map((climb) => {
+            // Format date to 'Month Day, Year'
+            const formattedDate = new Intl.DateTimeFormat('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric',
+            }).format(new Date(climb.date));
   
-              <button
-                className="mt-4 ml-4 text-red-600 hover:underline"
-                onClick={() => handleDeleteClimb(climb.id)}
+            return (
+              <div
+                key={climb.id}
+                className="bg-white shadow-md rounded-lg p-6 mb-6 mx-auto flex flex-col"
+                style={{ width: '600px', height: '700px' }}
               >
-                Delete Climb
-              </button>
-            </div>
-          ))
+                {/* Peak Title at the Top */}
+                <h3 className="text-2xl font-semibold text-center text-black">{climb.peak}</h3>
+                {/* Date and Location Below the Title */}
+                <p className="text-gray-500 text-center mb-4">
+                  {formattedDate} &bull; {climb.location}
+                </p>
+  
+                {/* Metrics in the Middle */}
+                <div className="flex justify-around mb-4">
+                  <div className="text-center">
+                    <p className="text-gray-600 font-medium">Elevation</p>
+                    <p className="text-gray-800">{climb.elevation} ft</p>
+                  </div>
+                  {climb.miles && (
+                    <div className="text-center">
+                      <p className="text-gray-600 font-medium">Mileage</p>
+                      <p className="text-gray-800">{climb.miles} miles</p>
+                    </div>
+                  )}
+                </div>
+  
+                {/* Spacer to push the image to the bottom */}
+                <div className="flex-grow"></div>
+  
+                {/* Image at the Bottom */}
+                <img
+                  src={climb.image}
+                  alt={climb.location}
+                  className="rounded-lg mt-auto w-full h-2/3 object-cover"
+                />
+  
+                {/* Buttons */}
+                <div className="flex justify-center mt-4">
+                  <button
+                    className="text-blue-600 hover:underline mr-4"
+                    onClick={() => setSelectedClimb(climb)}
+                  >
+                    View Details
+                  </button>
+                  <button
+                    className="text-red-600 hover:underline"
+                    onClick={() => handleDeleteClimb(climb.id)}
+                  >
+                    Delete Climb
+                  </button>
+                </div>
+              </div>
+            );
+          })
         ) : (
           <p className="text-gray-600 text-center mt-4">No climbs available</p>
         )}
@@ -279,4 +311,4 @@ export default function ClimbsPage() {
       </Modal>
     </div>
   );
-}
+}  
