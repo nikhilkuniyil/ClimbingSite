@@ -22,6 +22,8 @@ export default function ClimbsPage() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalMode, setModalMode] = useState<'add' | 'view'>('add');
   const [selectedClimb, setSelectedClimb] = useState<Climb | null>(null);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
+  const [climbToDelete, setClimbToDelete] = useState<Climb | null>(null);
 
   const [date, setDate] = useState('');
   const [peak, setPeak] = useState('');
@@ -130,6 +132,8 @@ export default function ClimbsPage() {
 
   // Handle deletion of a climb
   const handleDeleteClimb = async (id: number) => {
+    if (!climbToDelete) return;
+
     try {
       const res = await fetch(`http://localhost:3001/climbs/${id}`, {
         method: 'DELETE',
@@ -137,12 +141,19 @@ export default function ClimbsPage() {
 
       if (res.ok) {
         setClimbs(climbs.filter((climb) => climb.id !== id));
+        setDeleteModalIsOpen(false); // Close the modal on success
+        setClimbToDelete(null);
       } else {
         console.error('Failed to delete the climb');
       }
     } catch (error) {
       console.error('Error deleting climb:', error);
     }
+  };
+
+  const confirmDeleteClimb = (climb: Climb) => {
+    setClimbToDelete(climb); // Set the climb to delete
+    setDeleteModalIsOpen(true); // Open the delete confirmation modal
   };
 
   return (
@@ -215,7 +226,7 @@ export default function ClimbsPage() {
                   </button>
                   <button
                     className="text-red-600 hover:underline"
-                    onClick={() => handleDeleteClimb(climb.id)}
+                    onClick={() => confirmDeleteClimb(climb)}
                   >
                     Delete Climb
                   </button>
@@ -316,6 +327,36 @@ export default function ClimbsPage() {
             </button>
           </div>
         </form>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={deleteModalIsOpen}
+        onRequestClose={() => setDeleteModalIsOpen(false)}
+        contentLabel="Confirm Delete Climb"
+        className="bg-white p-6 rounded-lg max-w-md mx-auto mt-20 shadow-lg"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+      >
+        <h2 className="text-2xl font-bold mb-4 text-black">Confirm Delete</h2>
+        <p>Are you sure you want to delete this climb?</p>
+        <div className="flex justify-end mt-4">
+          <button
+            className="bg-gray-300 text-black px-4 py-2 rounded mr-2"
+            onClick={() => setDeleteModalIsOpen(false)}
+          >
+            Cancel
+          </button>
+          <button
+            className="bg-red-600 text-white px-4 py-2 rounded"
+            onClick={() => {
+        if (climbToDelete) {
+          handleDeleteClimb(climbToDelete.id); // Only call handleDeleteClimb when clicked
+        }
+      }} // Handle actual deletion
+          >
+            Delete
+          </button>
+        </div>
       </Modal>
     </div>
   );
