@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const admin = require('firebase-admin');
+const serviceAccount = require('./service-account-key.json');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -52,8 +54,31 @@ const db = new sqlite3.Database(path.join(__dirname, 'climbing-tracker.db'), (er
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+// Initialize Firebase Admin with service account credentials
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+// Middleware to check the token
+const authenticateToken = async (req, res, next) => {
+  const idToken = req.headers.authorization?.split(' ')[1]; // Extract the token from the header
+  if (!idToken) {
+    return res.status(401).json({ error: 'Unauthorized access' });
+  }
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    req.user = decodedToken; // Attach decoded token to the request object
+    next(); // Continue to the route handler
+  } catch (error) {
+    console.error('Error verifying token:', error);
+    return res.status(403).json({ error: 'Token verification failed' });
+  }
+};
+
+
 // API route to get climbs
-app.get('/climbs', (req, res) => {
+app.get('/climbs', authenticateToken, (req, res) => {
   const { userId } = req.query;
   if (!userId) {
     console.log('No userId provided');
