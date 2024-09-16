@@ -35,3 +35,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 climbing-tracker/app/lib/firebase.js
+climbing-backend/service-account-key.json
