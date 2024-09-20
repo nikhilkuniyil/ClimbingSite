@@ -212,8 +212,6 @@ export default function ClimbsPage() {
     setDeleteModalIsOpen(true); // Open the delete confirmation modal
   };
 
-  console.log('Climbs data before rendering:', climbs)
-
   return (
     <div className="bg-gray-100 min-h-screen">
       <NavBar />
