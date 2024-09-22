@@ -27,6 +27,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
 
 # vercel
 .vercel
@@ -35,5 +36,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 climbing-tracker/app/lib/firebase.js
-climbing-backend/service-account-key.json
 climbing-backend/service-account-key.json
